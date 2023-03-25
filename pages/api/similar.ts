@@ -1,5 +1,4 @@
 import { Document } from "langchain/document";
-import { HNSWLib } from "langchain/vectorstores";
 import { PineconeStore } from "langchain/vectorstores";
 import { OpenAIEmbeddings } from "langchain/embeddings";
 import { PineconeClient } from "@pinecone-database/pinecone";

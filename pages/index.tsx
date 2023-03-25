@@ -1,14 +1,7 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import styles from '@/styles/Home.module.css'
 import { useEffect, useState, KeyboardEvent, useRef } from 'react'
-import { IconArrowRight, IconExternalLink, IconSearch } from "@tabler/icons-react";
-import { HNSWLib } from 'langchain/vectorstores';
-import { OpenAIEmbeddings } from 'langchain/embeddings';
-import { OpenAI } from 'langchain/llms';
+import { IconSearch } from "@tabler/icons-react";
 import { Document } from "langchain/document";
-import { ChatVectorDBQAChain } from 'langchain/chains';
-import { log } from 'console';
 import { Answer } from '@/components/Answer/Answer';
 import Navbar from '@/components/Navbar';
 
