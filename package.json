@@ -10,6 +10,7 @@
     "embed": "tsx scripts/embedder.ts"
   },
   "dependencies": {
+    "@pinecone-database/pinecone": "^0.0.10",
     "@tabler/icons-react": "^2.11.0",
     "@types/node": "18.15.5",
     "@types/react": "18.0.28",
