@@ -148,7 +148,7 @@ export default function Home() {
         <title>FCNB GPT</title>
         <meta name="description" content="AI Search on FCNB" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon_white.ico" />
       </Head>
       
       <div className="flex flex-col h-screen">
