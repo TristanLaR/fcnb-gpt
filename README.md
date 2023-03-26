@@ -1,4 +1,4 @@
-This repository containes the code for [FCNB GPT](www.fcnb.xyz), a website to query public FCNB knowledge and receive AI generated answers.
+This repository containes the code for [FCNB GPT](http://www.fcnb.xyz), a website to query public FCNB knowledge and receive AI generated answers.
 
 ## How to Run
 
