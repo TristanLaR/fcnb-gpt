@@ -2,11 +2,14 @@
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 
 export enum OpenAIModel {
-    DAVINCI_TURBO = "gpt-3.5-turbo"
-  }
+  DAVINCI_TURBO = "gpt-3.5-turbo"
+}
 
-export const OpenAIStream = async (prompt: string, apiKey: string) => {
-    console.log("Starting OpenAI stream...");
+export const OpenAIStream = async (prompt: string) => {
+  console.log("Starting OpenAI stream...");
+
+  const apiKey = process.env.OPEN_AI_API_KEY;
+
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
