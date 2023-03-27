@@ -3,8 +3,6 @@ import { useEffect, useState, KeyboardEvent, useRef } from 'react'
 import { IconSearch } from "@tabler/icons-react";
 import { Document } from "langchain/document";
 import { Answer } from '@/components/Answer/Answer';
-import Navbar from '@/components/Navbar';
-
 
 export default function Home() {
 
@@ -12,7 +10,6 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showSettings, setShowSettings] = useState<boolean>(false);
 
   // Handle answer 
   const handleAnswer = async () => {
@@ -104,10 +101,6 @@ export default function Home() {
     if (e.key === "Enter") {
       handleAnswer();
     }
-  };
-
-  const toggleSettings = () => {
-    setShowSettings(!showSettings);
   };
 
   return (
