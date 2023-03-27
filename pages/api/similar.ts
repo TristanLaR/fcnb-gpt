@@ -9,6 +9,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
   // Query 
   const query = req.body.query;
 
+  console.log("Query: ", query);
+  
+
   // Vector DB 
   const pinecone = new PineconeClient();
   await pinecone.init({
