@@ -106,8 +106,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>FCNB GPT</title>
-        <meta name="description" content="AI Search on FCNB" />
+        <title>FCNB Semantic Search</title>
+        <meta name="description" content="Search the FCNB knowledgebase using AI!" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon_white.ico" />
       </Head>
@@ -115,10 +115,11 @@ export default function Home() {
       <div className="flex flex-col h-screen">
         <div className="flex-1 overflow-auto">
           <div className="mx-auto flex h-full w-full max-w-[750px] flex-col items-center px-3 pt-4 sm:pt-8">
-            <div className="font-bold text-5xl flex items-center">
-              <div className="py-8">FCNB 🤝 GPT</div>
+            <div className="font-bold text-6xl flex-wrap md:flex text-center py-8">
+              <div className="text-transparent bg-gradient-to-br from-blue-600 to-yellow-300 bg-clip-text">FCNB</div>
+              &nbsp;Semantic Search
             </div>
-            <div className="pt-4 pb-6 text-lg">Search the FCNB knowledgebase powered by AI!</div>
+            <div className="pt-4 pb-6 text-lg">Search the FCNB knowledgebase using AI!</div>
 
             <div className="relative w-full mt-4">
               <IconSearch className="absolute top-3 w-10 left-1 h-6 rounded-full opacity-50 sm:left-3 sm:top-4 sm:h-8" />
@@ -134,6 +135,7 @@ export default function Home() {
               />
 
             </div>
+            <div className='font-light italic text-sm text-slate-500'>Powered by GPT-3.5</div>
 
             {loading ? (
               <div className="mt-6 w-full">
@@ -152,6 +154,7 @@ export default function Home() {
             }
           </div>
         </div>
+        <div className="flex-col text-center font-extralight py-2 px-8 text-xs">*This website is a proof of concept and intended for testing purposes only, any information presented here is sourced from <a className='font-normal hover:underline' href='https://www.fcnb.ca' target="_blank">fcnb.ca</a> and should not be considered final or official.</div>
       </div>
     </>
   )
