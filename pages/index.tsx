@@ -134,7 +134,7 @@ export default function Home() {
                 onKeyDown={handleKeyDown}
               />
               {loading ? (
-                <div className="flex h-8 w-8 absolute right-1 bottom-0">
+                <div className="flex h-8 w-8 absolute right-1 -bottom-2 sm:bottom-0">
                   <span className="animate-ping absolute h-8 w-8 -top-4 -left-4 rounded-full bg-gray-200 opacity-75"></span>
                   <span className="relative rounded-full h-8 w-8 -top-4 -left-4 bg-gray-100"></span>
                 </div>
