@@ -118,7 +118,7 @@ export default function Home() {
             <div className="font-bold text-5xl flex items-center">
               <div className="py-8">FCNB 🤝 GPT</div>
             </div>
-            <div className="pt-4 pb-6 text-lg">Search FCNB knowledgebase powered by AI!</div>
+            <div className="pt-4 pb-6 text-lg">Search the FCNB knowledgebase powered by AI!</div>
 
             <div className="relative w-full mt-4">
               <IconSearch className="absolute top-3 w-10 left-1 h-6 rounded-full opacity-50 sm:left-3 sm:top-4 sm:h-8" />
