@@ -6,7 +6,7 @@ export enum OpenAIModel {
 }
 
 export const OpenAIStream = async (prompt: string) => {
-  console.log("Starting OpenAI stream...");
+  console.log("Prompting OpenAI: ", prompt);
 
   const apiKey = process.env.OPEN_AI_API_KEY;
 
