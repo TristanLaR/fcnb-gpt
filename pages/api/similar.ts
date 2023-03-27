@@ -8,8 +8,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
 
   // Query 
   const query = req.body.query;
-  const apiKey = req.body.apiKey;
-  process.env.OPENAI_API_KEY = apiKey;
 
   // Vector DB 
   const pinecone = new PineconeClient();
@@ -19,40 +17,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
   });
   const index = pinecone.Index("fcnb-gpt");
   const vectorStore = await PineconeStore.fromExistingIndex(
-    new OpenAIEmbeddings(), { pineconeIndex: index },
+    new OpenAIEmbeddings({openAIApiKey: process.env.OPEN_AI_API_KEY}), { pineconeIndex: index },
   );
   // Return chunks to display as references 
-  const results = await vectorStore.similaritySearch(query, 5);
+  const results = await vectorStore.similaritySearch(query, 7);
   res.status(200).send(results);
 }
-
-// const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) => {
-
-//   console.log("Request received");
-
-
-//   const query = req.body.query;
-//   const apiKey = req.body.apiKey;
-//   process.env.OPENAI_API_KEY = apiKey;
-
-//   console.log("Loading vector store...")
-
-//   // Load the vector store from the same directory
-//   const vectorStore = await HNSWLib.load(
-//     "db",
-//     new OpenAIEmbeddings()
-//   );
-
-//   // console.log("Searching...")
-
-//   const result = await vectorStore.similaritySearch(query, 5);
-
-//   // console.log(result);
-//   console.log("Request completed");
-
-
-//   res.status(200).send(result); 
-
-// };
 
 export default handler;
