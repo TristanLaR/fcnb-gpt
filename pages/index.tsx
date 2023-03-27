@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useEffect, useState, KeyboardEvent, useRef } from 'react'
-import { IconSearch } from "@tabler/icons-react";
+import { IconSearch, IconArrowRight } from "@tabler/icons-react";
 import { Document } from "langchain/document";
 import { Answer } from '@/components/Answer/Answer';
 
@@ -133,22 +133,35 @@ export default function Home() {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
               />
+              {loading ? (
+                <div className="flex h-8 w-8 absolute right-1 -bottom-2 sm:bottom-0">
+                  <span className="animate-ping absolute h-8 w-8 -top-4 -left-4 rounded-full bg-gray-200 opacity-75"></span>
+                  <span className="relative rounded-full h-8 w-8 -top-4 -left-4 bg-gray-100"></span>
+                </div>
 
+              ) : (
+                <button>
+                  <IconArrowRight
+                    onClick={handleAnswer}
+                    className="absolute top-3 w-10 right-1 h-6 rounded-full opacity-50 sm:right-3 sm:top-4 sm:h-8"
+                  />
+                </button>
+              )}
             </div>
             <div className='font-light italic text-sm text-slate-500'>Powered by GPT-3.5</div>
 
             {loading ? (
-              <div className="mt-6 w-full">
+              <div className="mt-8 w-full">
 
                 <div className="animate-pulse mt-2">
-                  <div className="h-4 bg-gray-300 rounded"></div>
-                  <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                  <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                  <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                  <div className="h-4 bg-gray-300 rounded mt-2"></div>
+                  <div className="h-4 bg-gray-100 rounded"></div>
+                  <div className="h-4 bg-gray-100 rounded mt-2"></div>
+                  <div className="h-4 bg-gray-100 rounded mt-2"></div>
+                  <div className="h-4 bg-gray-100 rounded mt-2"></div>
+                  <div className="h-4 bg-gray-100 rounded mt-2"></div>
                 </div>
               </div>
-            ) : <div className="mt-6 min-w-full">
+            ) : <div className="mt-8 min-w-full">
               <Answer text={answer} />
             </div>
             }
