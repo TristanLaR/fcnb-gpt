@@ -4,7 +4,7 @@ import { useEffect, useState, KeyboardEvent, useRef } from 'react'
 import { IconSearch, IconArrowRight } from "@tabler/icons-react";
 import { Document } from "langchain/document";
 import { Answer } from '@/components/Answer/Answer';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
 const lngs = {
   en: { nativeName: 'English' },
@@ -14,7 +14,7 @@ const lngs = {
 
 export default function Home() {
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState("");
@@ -112,6 +112,11 @@ export default function Home() {
     }
   };
 
+  const handleLanguageChange = () => {
+    const nextLng = i18n.language === 'en' ? 'fr' : 'en';
+    i18n.changeLanguage(nextLng);
+  };
+
   return (
     <>
       <Head>
@@ -123,12 +128,17 @@ export default function Home() {
 
       <div className="flex flex-col h-screen">
         <div className="flex-1 overflow-auto">
+          <div className='flex flex-row-reverse pr-4 pt-2'>
+            <button onClick={handleLanguageChange} >
+              {i18n.resolvedLanguage.toUpperCase()}
+            </button>
+          </div>
           <div className="mx-auto flex h-full w-full max-w-[750px] flex-col items-center px-3 pt-4 sm:pt-8">
-            <div className="font-bold text-6xl flex-wrap md:flex text-center py-8">
+            <div className="font-bold text-6xl md:flex text-center py-8">
               <div className="text-transparent bg-gradient-to-br from-blue-600 to-yellow-300 bg-clip-text">FCNB</div>
-              &nbsp;Semantic Search
+              <div className='md:whitespace-nowrap'>&nbsp;{t('title')}</div>
             </div>
-            <div className="pt-4 pb-6 text-lg">{t('slogan')}</div>
+            <div className="pt-4 pb-6 text-lg text-center">{t('slogan')}</div>
 
             <div className="relative w-full mt-4">
               <IconSearch className="absolute top-3 w-10 left-1 h-6 rounded-full opacity-50 sm:left-3 sm:top-4 sm:h-8" />
@@ -137,7 +147,7 @@ export default function Home() {
                 ref={inputRef}
                 className="h-12 w-full rounded-full border border-zinc-600 pr-12 pl-11 focus:border-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-800 sm:h-16 sm:py-2 sm:pr-16 sm:pl-16 sm:text-lg"
                 type="text"
-                placeholder="What is FCNB?"
+                placeholder={t('hint')!}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -157,7 +167,7 @@ export default function Home() {
                 </button>
               )}
             </div>
-            <div className='font-light italic text-sm text-slate-500'>Powered by GPT-3.5</div>
+            <div className='font-light italic text-sm text-slate-500'>{t('poweredBy')}</div>
 
             {loading ? (
               <div className="mt-8 w-full">
@@ -176,7 +186,11 @@ export default function Home() {
             }
           </div>
         </div>
-        <div className="flex-col text-center font-extralight py-2 px-8 text-xs">*This website is a proof of concept and intended for testing purposes only, any information presented here is sourced from <a className='font-normal hover:underline' href='https://www.fcnb.ca' target="_blank">fcnb.ca</a> and should not be considered final or official.</div>
+        <div className="flex-col text-center font-extralight py-2 px-8 text-xs">
+          <Trans i18nKey="disclaimer">
+            *This website is a proof of concept and intended for testing purposes only, any information presented here is sourced from <a className='font-normal hover:underline' href='https://www.fcnb.ca' target='_blank'>fcnb.ca</a> and should not be considered final or official.
+          </Trans>
+        </div>
       </div>
     </>
   )
