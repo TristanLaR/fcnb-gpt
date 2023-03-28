@@ -20,6 +20,10 @@ export default function Home() {
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem('LANG') || 'en');
+  }, []);
+
   // Handle answer 
   const handleAnswer = async () => {
 
@@ -72,7 +76,8 @@ export default function Home() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        prompt
+        prompt,
+        lang: i18n.language
       }),
     });
 
@@ -115,6 +120,7 @@ export default function Home() {
   const handleLanguageChange = () => {
     const nextLng = i18n.language === 'en' ? 'fr' : 'en';
     i18n.changeLanguage(nextLng);
+    localStorage.setItem('LANG', nextLng);
   };
 
   return (
