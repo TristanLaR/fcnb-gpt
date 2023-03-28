@@ -1,11 +1,20 @@
 import Head from 'next/head'
+import './i18n';
 import { useEffect, useState, KeyboardEvent, useRef } from 'react'
 import { IconSearch, IconArrowRight } from "@tabler/icons-react";
 import { Document } from "langchain/document";
 import { Answer } from '@/components/Answer/Answer';
+import { useTranslation } from 'react-i18next';
+
+const lngs = {
+  en: { nativeName: 'English' },
+  fr: { nativeName: 'French' }
+};
+
 
 export default function Home() {
 
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState("");
@@ -119,7 +128,7 @@ export default function Home() {
               <div className="text-transparent bg-gradient-to-br from-blue-600 to-yellow-300 bg-clip-text">FCNB</div>
               &nbsp;Semantic Search
             </div>
-            <div className="pt-4 pb-6 text-lg">Search the FCNB knowledgebase using AI!</div>
+            <div className="pt-4 pb-6 text-lg">{t('slogan')}</div>
 
             <div className="relative w-full mt-4">
               <IconSearch className="absolute top-3 w-10 left-1 h-6 rounded-full opacity-50 sm:left-3 sm:top-4 sm:h-8" />
