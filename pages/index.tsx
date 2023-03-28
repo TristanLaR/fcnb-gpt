@@ -135,8 +135,10 @@ export default function Home() {
       <div className="flex flex-col h-screen">
         <div className="flex-1 overflow-auto">
           <div className='flex flex-row-reverse pr-4 pt-2'>
-            <button onClick={handleLanguageChange} >
-              {i18n.resolvedLanguage.toUpperCase()}
+            <button 
+            className='border border-zinc-600 rounded px-3 py-1 text-zinc-600 hover:border-zinc-800 hover:text-zinc-800'
+            onClick={handleLanguageChange} >
+              {i18n.resolvedLanguage === 'en' ? 'FR' : 'EN'}
             </button>
           </div>
           <div className="mx-auto flex h-full w-full max-w-[750px] flex-col items-center px-3 pt-4 sm:pt-8">

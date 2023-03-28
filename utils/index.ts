@@ -7,14 +7,9 @@ export enum OpenAIModel {
 }
 
 export const OpenAIStream = async (prompt: string, lang: string) => {
-  console.log("Starting OpenAI stream...");
-
   const translate = lang === 'fr' ? 'Translate the output to french. ' : '';
 
   const instruction = translate + "You are a helpful assistant that accurately answers queries about the Financial Commission of New Brunswick (FCNB) from it's website data. Use the text provided to form your answer, but avoid copying word-for-word from the essays. Try to use your own words when possible. Keep your answer under 5 sentences. Be accurate, helpful, concise, and clear."
-
-  console.log(instruction);
-
 
   const apiKey = process.env.OPEN_AI_API_KEY;
 
