@@ -1,12 +1,15 @@
 // import { OpenAIModel } from "@/types";
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
+import * as i18n from '../i18n/i18n';
 
 export enum OpenAIModel {
   DAVINCI_TURBO = "gpt-3.5-turbo"
 }
 
-export const OpenAIStream = async (prompt: string) => {
-  console.log("Starting OpenAI stream...");
+export const OpenAIStream = async (prompt: string, lang: string) => {
+  const translate = lang === 'fr' ? 'Translate the output to french. ' : '';
+
+  const instruction = translate + "You are a helpful assistant that accurately answers queries about the Financial Commission of New Brunswick (FCNB) from it's website data. Use the text provided to form your answer, but avoid copying word-for-word from the essays. Try to use your own words when possible. Keep your answer under 5 sentences. Be accurate, helpful, concise, and clear."
 
   const apiKey = process.env.OPEN_AI_API_KEY;
 
@@ -24,7 +27,7 @@ export const OpenAIStream = async (prompt: string) => {
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant that accurately answers queries about the Financial Commission of New Brunswick (FCNB) from it's website data. Use the text provided to form your answer, but avoid copying word-for-word from the essays. Try to use your own words when possible. Keep your answer under 5 sentences. Be accurate, helpful, concise, and clear."
+          content: instruction
         },
         {
           role: "user",

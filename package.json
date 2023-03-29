@@ -22,12 +22,16 @@
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "hnswlib-node": "^1.4.2",
+    "i18next": "^22.4.13",
+    "i18next-browser-languagedetector": "^7.0.1",
     "langchain": "^0.0.37",
     "next": "13.2.4",
     "pdf-parse": "^1.1.1",
     "postcss": "^8.4.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-i18next": "^12.2.0",
+    "react-toastify": "^9.1.2",
     "typescript": "5.0.2"
   },
   "devDependencies": {
