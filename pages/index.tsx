@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import './i18n';
+import '../i18n/i18n';
 import { useEffect, useState, KeyboardEvent, useRef } from 'react'
 import { IconSearch, IconArrowRight } from "@tabler/icons-react";
 import { Document } from "langchain/document";

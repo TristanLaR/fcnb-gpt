@@ -1,6 +1,6 @@
 // import { OpenAIModel } from "@/types";
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
-import * as i18n from '../pages/i18n';
+import * as i18n from '../i18n/i18n';
 
 export enum OpenAIModel {
   DAVINCI_TURBO = "gpt-3.5-turbo"
