@@ -5,6 +5,8 @@ import { IconSearch, IconArrowRight } from "@tabler/icons-react";
 import { Document } from "langchain/document";
 import { Answer } from '@/components/Answer/Answer';
 import { useTranslation, Trans } from 'react-i18next';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const lngs = {
   en: { nativeName: 'English' },
@@ -23,7 +25,7 @@ export default function Home() {
   useEffect(() => {
     console.log("useEffect");
     i18n.changeLanguage(localStorage.getItem('LANG') || 'en');
-  },[i18n]);
+  }, [i18n]);
 
   // Handle answer 
   const handleAnswer = async () => {
@@ -55,8 +57,8 @@ export default function Home() {
 
     if (!search_results.ok) {
       setLoading(false);
-      console.log("Error fetching search results");
-      throw new Error(search_results.statusText);
+      toastNotification();
+      console.log("Error fetching search results", search_results.statusText);
     }
 
     console.log("Documents fetched.");
@@ -83,7 +85,8 @@ export default function Home() {
     });
 
     if (!response.ok) {
-      throw new Error(response.statusText);
+      toastNotification();
+      console.log("Error fetching answer: ", response.statusText);
     }
 
     console.log("Answer fetched.");
@@ -124,6 +127,8 @@ export default function Home() {
     localStorage.setItem('LANG', nextLng);
   };
 
+  const toastNotification = () => toast.error("An error occured!");
+
   return (
     <>
       <Head>
@@ -135,10 +140,22 @@ export default function Home() {
 
       <div className="flex flex-col h-screen">
         <div className="flex-1 overflow-auto">
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
           <div className='flex flex-row-reverse pr-4 pt-2'>
-            <button 
-            className='border border-zinc-600 rounded px-3 py-1 text-zinc-600 hover:border-zinc-800 hover:text-zinc-800 hover:shadow hover:shadow-slate-300'
-            onClick={handleLanguageChange} >
+            <button
+              className='border border-zinc-600 rounded px-3 py-1 text-zinc-600 hover:border-zinc-800 hover:text-zinc-800 hover:shadow hover:shadow-slate-300'
+              onClick={handleLanguageChange} >
               {i18n.resolvedLanguage === 'en' ? 'FR' : 'EN'}
             </button>
           </div>
