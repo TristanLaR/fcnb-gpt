@@ -21,8 +21,9 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log("useEffect");
     i18n.changeLanguage(localStorage.getItem('LANG') || 'en');
-  }, []);
+  },[i18n]);
 
   // Handle answer 
   const handleAnswer = async () => {
