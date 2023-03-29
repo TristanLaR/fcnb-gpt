@@ -137,7 +137,7 @@ export default function Home() {
         <div className="flex-1 overflow-auto">
           <div className='flex flex-row-reverse pr-4 pt-2'>
             <button 
-            className='border border-zinc-600 rounded px-3 py-1 text-zinc-600 hover:border-zinc-800 hover:text-zinc-800'
+            className='border border-zinc-600 rounded px-3 py-1 text-zinc-600 hover:border-zinc-800 hover:text-zinc-800 hover:shadow hover:shadow-slate-300'
             onClick={handleLanguageChange} >
               {i18n.resolvedLanguage === 'en' ? 'FR' : 'EN'}
             </button>
