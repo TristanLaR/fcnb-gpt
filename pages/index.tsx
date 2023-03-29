@@ -129,6 +129,8 @@ export default function Home() {
 
   const toastNotification = () => toast.error("An error occured!");
 
+  const url = i18n.language === 'en' ? 'https://www.fcnb.ca/en' : 'https://www.fcnb.ca/fr';
+
   return (
     <>
       <Head>
@@ -214,7 +216,7 @@ export default function Home() {
         </div>
         <div className="flex-col text-center font-extralight py-2 px-8 text-xs">
           <Trans i18nKey="disclaimer">
-            *This website is a proof of concept and intended for testing purposes only, any information presented here is sourced from <a className='font-normal hover:underline' href='https://www.fcnb.ca' target='_blank'>fcnb.ca</a> and should not be considered final or official.
+            *This website is a proof of concept and intended for testing purposes only, any information presented here is sourced from <a className='font-normal hover:underline' href={url} target='_blank'>fcnb.ca</a> and should not be considered final or official.
           </Trans>
         </div>
       </div>
