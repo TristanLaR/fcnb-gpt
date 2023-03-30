@@ -32,7 +32,7 @@ export default function Home() {
 
     console.log("Start handle answer");
     if (!query) {
-      toast.warn("Please enter a query.");
+      toast.warn(t('query'));
       return;
     }
 
@@ -127,7 +127,7 @@ export default function Home() {
     localStorage.setItem('LANG', nextLng);
   };
 
-  const toastError = () => toast.error("An error occured!");
+  const toastError = () => toast.error(t('error'));
 
   const url = i18n.language === 'en' ? 'https://www.fcnb.ca/en' : 'https://www.fcnb.ca/fr';
 
