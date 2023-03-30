@@ -32,7 +32,7 @@ export default function Home() {
 
     console.log("Start handle answer");
     if (!query) {
-      alert("Please enter a query.");
+      toast.warn("Please enter a query.");
       return;
     }
 
@@ -57,7 +57,7 @@ export default function Home() {
 
     if (!search_results.ok) {
       setLoading(false);
-      toastNotification();
+      toastError();
       console.log("Error fetching search results", search_results.statusText);
     }
 
@@ -85,7 +85,7 @@ export default function Home() {
     });
 
     if (!response.ok) {
-      toastNotification();
+      toastError();
       console.log("Error fetching answer: ", response.statusText);
     }
 
@@ -127,7 +127,7 @@ export default function Home() {
     localStorage.setItem('LANG', nextLng);
   };
 
-  const toastNotification = () => toast.error("An error occured!");
+  const toastError = () => toast.error("An error occured!");
 
   const url = i18n.language === 'en' ? 'https://www.fcnb.ca/en' : 'https://www.fcnb.ca/fr';
 
