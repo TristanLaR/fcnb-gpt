@@ -21,6 +21,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
+  const [documents, setDocuments] = useState<Document[]>([]);
 
   useEffect(() => {
     console.log("useEffect");
@@ -54,8 +55,7 @@ export default function Home() {
     });
 
     console.log("Search results fetched.");
-    console.log(search_results);
-    
+
 
     if (!search_results.ok) {
       setLoading(false);
@@ -65,6 +65,7 @@ export default function Home() {
 
     console.log("Documents fetched.");
     const result: Document[] = await search_results.json();
+    setDocuments(result);
     console.log(result);
 
 
@@ -212,6 +213,13 @@ export default function Home() {
               </div>
             ) : <div className="mt-8 min-w-full">
               <Answer text={answer} />
+              <div className='mt-6 divide-y divide-slate-200'>
+                {documents.map((doc, i) => (
+                  <div key={i} className="mt-2 hover:underline">
+                    <a href={doc.metadata.url} target='_blank'>{doc.metadata.title}</a>
+                  </div>),
+                )}
+              </div>
             </div>
             }
           </div>
