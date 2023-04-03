@@ -29,20 +29,33 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
   console.log("Finding metadata for results...");
 
 
+
   if (results.length > 0) {
-    results.forEach((result) => {
-      findRowByName(result.metadata.source).then((row) => {
+    const promises = results.map((result) =>
+      findRowByName(result.metadata.source)
+        .then((row) => {
+          console.log("Row: ", row);
 
-        console.log("Row: ", row);
+          // add row to metadata
+          result.metadata = { ...result.metadata, ...row };
+          console.log("Result: ", result);
+        })
+        .catch((err) => {
+          console.log("Error finding row: ", err);
+        })
+    );
 
-        // add row to metadata
-        result.metadata = { ...result.metadata, ...row };
-        console.log("Result: ", result);
+    Promise.all(promises)
+      .then(() => {
+        res.status(200).send(results);
+      })
+      .catch((err) => {
+        console.log("Error waiting for all promises to complete: ", err);
+        res.status(500).send(results);
       });
-    });
+  } else {
+    res.status(200).send(results);
   }
-
-  res.status(200).send(results);
-}
+};
 
 export default handler;

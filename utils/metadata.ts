@@ -7,7 +7,8 @@ interface Row {
     title: string;
 }
 
-export async function findRowByName(name: string): Promise<{ url: string; title: string; } | null> {
+export function findRowByName(name: string): Promise<{ url: string; title: string; } | null> {
+    return new Promise<{ url: string, title: string }>((resolve, reject) => {
     const results: Row[] = [];
 
     fs.createReadStream('/Users/trilar/Documents/development/projects/fcnb-gpt/data/metadata.csv')
@@ -18,11 +19,14 @@ export async function findRowByName(name: string): Promise<{ url: string; title:
 
             if (row) {
                 console.log("Found row: ", row);
-                return { url: row.url, title: row.title };
+                resolve({ url: row.url, title: row.title });
             } else {
                 console.log("No row found for name: ", name);
-                return null;
+                reject();
             }
+        })
+        .on('error', (err) => {
+            reject(err);
         });
-    return null;
+    });
 }

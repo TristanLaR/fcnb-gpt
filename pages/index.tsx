@@ -54,6 +54,8 @@ export default function Home() {
     });
 
     console.log("Search results fetched.");
+    console.log(search_results);
+    
 
     if (!search_results.ok) {
       setLoading(false);
