@@ -3,6 +3,7 @@ import { PineconeStore } from "langchain/vectorstores";
 import { OpenAIEmbeddings } from "langchain/embeddings";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { NextApiRequest, NextApiResponse } from "next";
+import { findRowByName } from "@/utils/metadata";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) => {
 
@@ -10,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
   const query = req.body.query;
 
   console.log("Query: ", query);
-  
+
 
   // Vector DB 
   const pinecone = new PineconeClient();
@@ -20,10 +21,27 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
   });
   const index = pinecone.Index("fcnb-gpt");
   const vectorStore = await PineconeStore.fromExistingIndex(
-    new OpenAIEmbeddings({openAIApiKey: process.env.OPEN_AI_API_KEY}), { pineconeIndex: index },
+    new OpenAIEmbeddings({ openAIApiKey: process.env.OPEN_AI_API_KEY }), { pineconeIndex: index },
   );
   // Return chunks to display as references 
-  const results = await vectorStore.similaritySearch(query, 7);
+  const results = await vectorStore.similaritySearch(query, 5);
+
+  console.log("Finding metadata for results...");
+
+
+  if (results.length > 0) {
+    results.forEach((result) => {
+      findRowByName(result.metadata.source).then((row) => {
+
+        console.log("Row: ", row);
+
+        // add row to metadata
+        result.metadata = { ...result.metadata, ...row };
+        console.log("Result: ", result);
+      });
+    });
+  }
+
   res.status(200).send(results);
 }
 
