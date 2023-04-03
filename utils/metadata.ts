@@ -18,7 +18,7 @@ export function findRowByName(name: string): Promise<{ url: string; title: strin
             const row = results.find((r) => r.name === name);
 
             if (row) {
-                console.log("Found row: ", row);
+                // console.log("Found row: ", row);
                 resolve({ url: row.url, title: row.title });
             } else {
                 console.log("No row found for name: ", name);

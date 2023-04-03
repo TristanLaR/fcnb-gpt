@@ -22,6 +22,7 @@ export default function Home() {
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
   const [documents, setDocuments] = useState<Document[]>([]);
+  const [showDocuments, setShowDocuments] = useState(false)
 
   useEffect(() => {
     console.log("useEffect");
@@ -41,6 +42,7 @@ export default function Home() {
 
     setAnswer("");
     setLoading(true);
+    setShowDocuments(false);
 
     console.log("Fetching documents...");
     console.log("Query: " + query);
@@ -115,6 +117,8 @@ export default function Home() {
       const chunkValue = decoder.decode(value);
       setAnswer((prev) => prev + chunkValue);
     }
+
+    setShowDocuments(true);
 
   };
 
@@ -214,7 +218,7 @@ export default function Home() {
             ) : <div className="mt-8 min-w-full">
               <Answer text={answer} />
               <div className='mt-6 divide-y divide-slate-200'>
-                {documents.map((doc, i) => (
+                {showDocuments && documents.map((doc, i) => (
                   <div key={i} className="mt-2 hover:underline">
                     <a href={doc.metadata.url} target='_blank'>{doc.metadata.title}</a>
                   </div>),

@@ -34,13 +34,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
     const promises = results.map((result) =>
       findRowByName(result.metadata.source)
         .then((row) => {
-          console.log("Row: ", row);
+          // console.log("Row: ", row);
 
           // add row to metadata
           result.metadata = { ...result.metadata, ...row };
         })
         .catch((err) => {
-          console.log("Error finding row: ", err);
+          // console.log("Error finding row: ", err);
         })
     );
 
