@@ -38,7 +38,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
 
           // add row to metadata
           result.metadata = { ...result.metadata, ...row };
-          console.log("Result: ", result);
         })
         .catch((err) => {
           console.log("Error finding row: ", err);
@@ -50,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
         res.status(200).send(results);
       })
       .catch((err) => {
-        console.log("Error waiting for all promises to complete: ", err);
+        // console.log("Error waiting for all promises to complete: ", err);
         res.status(500).send(results);
       });
   } else {
