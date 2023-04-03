@@ -216,14 +216,7 @@ export default function Home() {
                 </div>
               </div>
             ) : <div className="mt-8 min-w-full">
-              <Answer text={answer} />
-              <div className='mt-6 divide-y divide-slate-200'>
-                {showDocuments && documents.map((doc, i) => (
-                  <div key={i} className="mt-2 hover:underline">
-                    <a href={doc.metadata.url} target='_blank'>{doc.metadata.title}</a>
-                  </div>),
-                )}
-              </div>
+              <Answer text={answer} showDocuments={showDocuments} documents={documents} />
             </div>
             }
           </div>
