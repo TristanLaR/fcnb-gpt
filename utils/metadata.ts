@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import csv from 'csv-parser';
+import path from 'path';
 
 interface Row {
     name: string;
@@ -11,7 +12,9 @@ export function findRowByName(name: string): Promise<{ url: string; title: strin
     return new Promise<{ url: string, title: string }>((resolve, reject) => {
     const results: Row[] = [];
 
-    fs.createReadStream('data/metadata.csv')
+    const metadata = path.resolve('./data', "metadata.csv");
+
+    fs.createReadStream(metadata)
         .pipe(csv())
         .on('data', (data: Row) => results.push(data))
         .on('end', () => {
