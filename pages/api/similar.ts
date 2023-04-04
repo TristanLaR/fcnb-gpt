@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
     new OpenAIEmbeddings({ openAIApiKey: process.env.OPEN_AI_API_KEY }), { pineconeIndex: index },
   );
   // Return chunks to display as references 
-  const results = await vectorStore.similaritySearch(query, 5);
+  const results = await vectorStore.similaritySearch(query, 7);
 
   console.log("Finding metadata for results...");
 
