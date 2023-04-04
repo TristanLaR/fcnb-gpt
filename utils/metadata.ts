@@ -11,7 +11,7 @@ export function findRowByName(name: string): Promise<{ url: string; title: strin
     return new Promise<{ url: string, title: string }>((resolve, reject) => {
     const results: Row[] = [];
 
-    fs.createReadStream('/Users/trilar/Documents/development/projects/fcnb-gpt/data/metadata.csv')
+    fs.createReadStream('data/metadata.csv')
         .pipe(csv())
         .on('data', (data: Row) => results.push(data))
         .on('end', () => {
