@@ -44,9 +44,8 @@ export const Answer: React.FC<AnswerProps> = ({ text, showDocuments, documents }
               const type = doc.metadata.source.split("/")[0];
               const image = type === "pdf" ? "/favicon_pdf.png" : "/favicon_black.ico";
               return (
-                <a href={doc.metadata.url} target='_blank'>
+                <a href={doc.metadata.url} target='_blank' key={index}>
                   <div
-                    key={index}
                     className={`py-1 hover:underline flex flex-row items-center space-x-2 ${styles.fadeIn}`}
                     style={{ animationDelay: `${index * 0.3}s` }}>
                     <Image src={image} width={16} height={16} alt={type} className="w-4 h-4 aspect-square" />
