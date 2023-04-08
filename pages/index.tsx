@@ -21,6 +21,8 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [showDocuments, setShowDocuments] = useState(false)
 
   useEffect(() => {
     console.log("useEffect");
@@ -40,6 +42,7 @@ export default function Home() {
 
     setAnswer("");
     setLoading(true);
+    setShowDocuments(false);
 
     console.log("Fetching documents...");
     console.log("Query: " + query);
@@ -55,6 +58,7 @@ export default function Home() {
 
     console.log("Search results fetched.");
 
+
     if (!search_results.ok) {
       setLoading(false);
       toastError();
@@ -63,6 +67,7 @@ export default function Home() {
 
     console.log("Documents fetched.");
     const result: Document[] = await search_results.json();
+    setDocuments(result);
     console.log(result);
 
 
@@ -112,6 +117,8 @@ export default function Home() {
       const chunkValue = decoder.decode(value);
       setAnswer((prev) => prev + chunkValue);
     }
+
+    setShowDocuments(true);
 
   };
 
@@ -209,7 +216,7 @@ export default function Home() {
                 </div>
               </div>
             ) : <div className="mt-8 min-w-full">
-              <Answer text={answer} />
+              <Answer text={answer} showDocuments={showDocuments} documents={documents} />
             </div>
             }
           </div>
