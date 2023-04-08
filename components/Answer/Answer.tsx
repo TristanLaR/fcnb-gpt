@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Image from 'next/image'
 import { Document } from "langchain/document";
 import styles from "./answer.module.css";
+import { useTranslation } from "react-i18next";
 
 interface AnswerProps {
   text: string;
@@ -10,6 +11,7 @@ interface AnswerProps {
 }
 
 export const Answer: React.FC<AnswerProps> = ({ text, showDocuments, documents }) => {
+  const { t } = useTranslation();
   const [words, setWords] = useState<string[]>([]);
 
   const uniqueDocs = new Set();
@@ -32,7 +34,7 @@ export const Answer: React.FC<AnswerProps> = ({ text, showDocuments, documents }
       {showDocuments && (
         <div>
           <div className={`font-bold text-xl pt-6 ${styles.fadeIn}`}>
-            Read More
+            {t("readMore")}
           </div>
           <div className='mt-6 pb-6 divide-y divide-slate-200'>
             {documents.map((doc, index) => {
