@@ -3,7 +3,8 @@ import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser
 import * as i18n from '../i18n/i18n';
 
 export enum OpenAIModel {
-  DAVINCI_TURBO = "gpt-3.5-turbo"
+  DAVINCI_TURBO = "gpt-3.5-turbo",
+  GPT4 = "gpt-4"
 }
 
 export const OpenAIStream = async (prompt: string, lang: string) => {
@@ -23,7 +24,7 @@ export const OpenAIStream = async (prompt: string, lang: string) => {
     },
     method: "POST",
     body: JSON.stringify({
-      model: OpenAIModel.DAVINCI_TURBO,
+      model: OpenAIModel.GPT4,
       messages: [
         {
           role: "system",

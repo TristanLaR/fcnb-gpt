@@ -19,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
     environment: "us-central1-gcp",
     apiKey: process.env.PINECONE_API_KEY ?? "",
   });
-  const index = pinecone.Index("fcnb-gpt");
+  const index = pinecone.Index("fcnb-gpt-index");
   const vectorStore = await PineconeStore.fromExistingIndex(
     new OpenAIEmbeddings({ openAIApiKey: process.env.OPEN_AI_API_KEY }), { pineconeIndex: index },
   );
