@@ -17,20 +17,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     const stream = await OpenAIStream(prompt, lang);
 
-    // logging
-
-    const logObject = {
-      query: query,
-      response: stream
-    };
-
-    const logString = JSON.stringify(logObject);
-
-    console.log(logString);
-
     return new Response(stream);
   } catch (error) {
-    console.error(error);
+    console.error("Answer error:" + error);
     return new Response("Error", { status: 500 });
   }
 };
