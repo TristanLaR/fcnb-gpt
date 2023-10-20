@@ -80,7 +80,7 @@ export default function Home() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        prompt,
+        query,
         context,
         lang: i18n.language
       }),
