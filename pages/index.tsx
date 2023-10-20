@@ -70,11 +70,7 @@ export default function Home() {
     setDocuments(result);
     console.log(result);
 
-
-    // Prompt for LLM summarization
-    const prompt = `Use the following passages to provide an answer to the query: "${query}"
-    
-    ${result?.map((d: Document) => d.pageContent).join("\n\n")}"`
+    var context = result?.map((d: Document) => d.pageContent).join("\n\n");
 
     console.log("Fetching answer...");
 
@@ -85,6 +81,7 @@ export default function Home() {
       },
       body: JSON.stringify({
         prompt,
+        context,
         lang: i18n.language
       }),
     });

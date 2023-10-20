@@ -6,12 +6,27 @@ export const config = {
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const { prompt, lang } = (await req.json()) as {
-      prompt: string;
+    const { query, context, lang } = (await req.json()) as {
+      query: string;
+      context: string;
       lang: string;
     };
 
+    // Prompt for LLM summarization
+    const prompt = `Use the following passages to provide an answer to the query: "${query}"\n\n${context}`
+
     const stream = await OpenAIStream(prompt, lang);
+
+    // logging
+
+    const logObject = {
+      query: query,
+      response: stream
+    };
+
+    const logString = JSON.stringify(logObject);
+
+    console.log(logString);
 
     return new Response(stream);
   } catch (error) {
