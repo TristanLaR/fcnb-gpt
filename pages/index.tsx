@@ -70,11 +70,7 @@ export default function Home() {
     setDocuments(result);
     console.log(result);
 
-
-    // Prompt for LLM summarization
-    const prompt = `Use the following passages to provide an answer to the query: "${query}"
-    
-    ${result?.map((d: Document) => d.pageContent).join("\n\n")}"`
+    var context = result?.map((d: Document) => d.pageContent).join("\n\n");
 
     console.log("Fetching answer...");
 
@@ -84,7 +80,8 @@ export default function Home() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        prompt,
+        query,
+        context,
         lang: i18n.language
       }),
     });
@@ -117,6 +114,25 @@ export default function Home() {
       const chunkValue = decoder.decode(value);
       setAnswer((prev) => prev + chunkValue);
     }
+
+    // logging
+
+    const logObject = {
+      query: query,
+      response: answer
+    };
+
+    await fetch("/api/logger", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        query,
+        answer,
+        lang: i18n.language
+      }),
+    });
 
     setShowDocuments(true);
 

@@ -6,16 +6,20 @@ export const config = {
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const { prompt, lang } = (await req.json()) as {
-      prompt: string;
+    const { query, context, lang } = (await req.json()) as {
+      query: string;
+      context: string;
       lang: string;
     };
+
+    // Prompt for LLM summarization
+    const prompt = `Use the following passages to provide an answer to the query: "${query}"\n\n${context}`
 
     const stream = await OpenAIStream(prompt, lang);
 
     return new Response(stream);
   } catch (error) {
-    console.error(error);
+    console.error("Answer error:" + error);
     return new Response("Error", { status: 500 });
   }
 };

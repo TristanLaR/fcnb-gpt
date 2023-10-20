@@ -10,9 +10,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
   // Query 
   const query = req.body.query;
 
-  console.log("Query: ", query);
-
-
+  
+  
   // Vector DB 
   const pinecone = new PineconeClient();
   await pinecone.init({
@@ -22,13 +21,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
   const index = pinecone.Index("fcnb-gpt-index");
   const vectorStore = await PineconeStore.fromExistingIndex(
     new OpenAIEmbeddings({ openAIApiKey: process.env.OPEN_AI_API_KEY }), { pineconeIndex: index },
-  );
+    );
   // Return chunks to display as references 
   const results = await vectorStore.similaritySearch(query, 7);
-
-  console.log("Finding metadata for results...");
-
-
 
   if (results.length > 0) {
     const promises = results.map((result) =>
@@ -40,7 +35,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
           result.metadata = { ...result.metadata, ...row };
         })
         .catch((err) => {
-          // console.log("Error finding row: ", err);
+          console.log("Error finding row: ", err);
         })
     );
 
@@ -49,7 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Document[]>) =>
         res.status(200).send(results);
       })
       .catch((err) => {
-        // console.log("Error waiting for all promises to complete: ", err);
+        console.log("Error waiting for all promises to complete: ", err);
         res.status(500).send(results);
       });
   } else {
