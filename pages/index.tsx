@@ -115,25 +115,6 @@ export default function Home() {
       setAnswer((prev) => prev + chunkValue);
     }
 
-    // logging
-
-    const logObject = {
-      query: query,
-      response: answer
-    };
-
-    await fetch("/api/logger", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        query,
-        answer,
-        lang: i18n.language
-      }),
-    });
-
     setShowDocuments(true);
 
   };

@@ -13,14 +13,39 @@ const handler = async (req: Request): Promise<Response> => {
     };
 
     // Prompt for LLM summarization
-    const prompt = `Use the following passages to provide an answer to the query: "${query}"\n\n${context}`
+    const prompt = `Use the following passages to provide an answer to the query: "${query}"\n\n${context}`;
 
-    const stream = await OpenAIStream(prompt, lang);
+    const openAIStream = await OpenAIStream(prompt, lang);
 
-    return new Response(stream);
+    // Create a new response object with a new ReadableStream as the body
+    const response = new Response(new ReadableStream({
+      start(controller) {
+        const decoder = new TextDecoder();
+        let answer = "";
+        openAIStream.pipeTo(new WritableStream({
+          write(chunk) {
+            answer += decoder.decode(chunk);
+            controller.enqueue(chunk);
+          },
+          close() {
+            console.log(JSON.stringify({
+              query,
+              answer,
+              lang: lang
+            }));
+            controller.close();
+          },
+          abort() {
+            controller.error("Stream aborted");
+          }
+        }));
+      }
+    }));
+
+    return response;
   } catch (error) {
-    console.error("Answer error:" + error);
-    return new Response("Error", { status: 500 });
+    console.error("/answer/ error:" + error);
+    return new Response("", { status: 500 });
   }
 };
 
