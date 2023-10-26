@@ -67,7 +67,9 @@ export default function Home() {
 
     console.log("Documents fetched.");
     const result: Document[] = await search_results.json();
-    setDocuments(result);
+    
+    // only set documents with a url in metadata
+    setDocuments(result.filter((d: Document) => d.metadata.url));
     console.log(result);
 
     var context = result?.map((d: Document) => d.pageContent).join("\n\n");
