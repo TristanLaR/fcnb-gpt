@@ -21,16 +21,16 @@ const handler = async (req: Request): Promise<Response> => {
     const response = new Response(new ReadableStream({
       start(controller) {
         const decoder = new TextDecoder();
-        let textChunks = "";
+        let answer = "";
         openAIStream.pipeTo(new WritableStream({
           write(chunk) {
-            textChunks += decoder.decode(chunk);
+            answer += decoder.decode(chunk);
             controller.enqueue(chunk);
           },
           close() {
             console.log(JSON.stringify({
-              prompt,
-              textChunks,
+              query,
+              answer,
               lang: lang
             }));
             controller.close();
