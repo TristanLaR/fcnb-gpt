@@ -4,7 +4,8 @@ import * as i18n from '../i18n/i18n';
 
 export enum OpenAIModel {
   DAVINCI_TURBO = "gpt-3.5-turbo",
-  GPT4 = "gpt-4"
+  GPT4 = "gpt-4",
+  GPT4_TURBO = "gpt-4-1106-preview"
 }
 
 export const OpenAIStream = async (prompt: string, lang: string) => {
@@ -24,7 +25,7 @@ export const OpenAIStream = async (prompt: string, lang: string) => {
     },
     method: "POST",
     body: JSON.stringify({
-      model: OpenAIModel.GPT4,
+      model: OpenAIModel.GPT4_TURBO,
       messages: [
         {
           role: "system",
