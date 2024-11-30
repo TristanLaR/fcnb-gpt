@@ -51,6 +51,7 @@ export default function EnhancedSearchBox({ isDarkMode, onSubmit }: EnhancedSear
         onSubmit={handleSubmit}
         value={query}
         setValue={setQuery}
+        isDarkMode={isDarkMode}
         className={cn(
           "relative h-14 rounded-full",
           isDarkMode 

@@ -1,3 +1,5 @@
+'use client'
+
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
 type Language = 'en' | 'fr'
@@ -80,4 +82,3 @@ export const useLanguage = () => {
   }
   return context
 }
-

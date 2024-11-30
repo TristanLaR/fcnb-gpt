@@ -13,6 +13,7 @@ interface VanishingInputProps {
   className?: string;
   inputClassName?: string;
   placeholderClassName?: string;
+  isDarkMode?: boolean;
 }
 
 export function VanishingInput({
@@ -23,7 +24,8 @@ export function VanishingInput({
   setValue,
   className,
   inputClassName,
-  placeholderClassName
+  placeholderClassName,
+  isDarkMode
 }: VanishingInputProps) {
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -98,7 +100,7 @@ export function VanishingInput({
       x,
       y,
       r: 1,
-      color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
+      color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] / 255 * 0.9})`, // Softer color with 60% opacity
     }));
   }, [value]);
 
@@ -135,8 +137,7 @@ export function VanishingInput({
               ctx.beginPath();
               ctx.rect(n, i, s, s);
               ctx.fillStyle = color;
-              ctx.strokeStyle = color;
-              ctx.stroke();
+              ctx.fill();
             }
           });
         }
@@ -182,7 +183,17 @@ export function VanishingInput({
   };
 
   return (
-    <form onSubmit={handleSubmit} className={cn("relative w-full", className)}>
+    <form 
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(value);
+      }}
+      className={cn(
+        "w-full relative",
+        className,
+        isDarkMode ? "bg-[#0A1A2F] text-white" : "bg-white text-gray-900 border-2 border-gray-300"
+      )}
+    >
       <canvas
         ref={canvasRef}
         className={cn(
@@ -258,4 +269,3 @@ export function VanishingInput({
     </form>
   );
 }
-

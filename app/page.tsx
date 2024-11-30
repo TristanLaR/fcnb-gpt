@@ -27,35 +27,46 @@ export default function Home() {
     document.documentElement.classList.toggle('dark', isDarkMode)
   }, [])
 
-  const handleSubmit = (query: string) => {
+  const handleSubmit = async (query: string) => {
     console.log('Home: Search query submitted:', query)
     setIsStreaming(true)
     setCurrentResult('')
 
-    // Simulate streaming response
-    const mockResponses = [
-      `The Financial and Consumer Services Commission (FCNB) is New Brunswick's financial and consumer services regulator. FCNB is responsible for the administration and enforcement of provincial legislation that regulates the following sectors: securities, insurance, pensions, credit unions, trust and loan companies, co-operatives, and a wide range of consumer legislation.`,
-      `FCNB's mandate is to protect consumers and enhance public confidence in the financial and consumer marketplace through the provision of regulatory and educational services. They work to protect consumers and investors from unfair, improper or fraudulent practices. This includes investigating complaints, enforcing legislation, and educating the public about their rights and responsibilities.`,
-      `Some key areas that FCNB oversees include:
-1. Securities: Regulating the sale of securities and derivatives in New Brunswick.
-2. Insurance: Licensing and regulating insurance companies and professionals.
-3. Pensions: Overseeing private pension plans in the province.
-4. Consumer Affairs: Addressing issues related to credit reporting, collection agencies, real estate, and more.
-5. Financial Education: Providing resources and programs to improve financial literacy among New Brunswick residents.`
-    ]
+    try {
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: query,
+          language: t('language'),
+        }),
+      })
 
-    const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)]
-    
-    let currentIndex = 0
-    const interval = setInterval(() => {
-      if (currentIndex < randomResponse.length) {
-        setCurrentResult(prev => prev + randomResponse[currentIndex])
-        currentIndex++
-      } else {
-        clearInterval(interval)
-        setIsStreaming(false)
+      if (!response.ok) {
+        throw new Error('Search request failed')
       }
-    }, 20)
+
+      const reader = response.body?.getReader()
+      if (!reader) {
+        throw new Error('No reader available')
+      }
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) {
+          setIsStreaming(false)
+          break
+        }
+        const text = new TextDecoder().decode(value)
+        setCurrentResult(prev => prev + text)
+      }
+    } catch (error) {
+      console.error('Search error:', error)
+      setCurrentResult('An error occurred while searching. Please try again.')
+      setIsStreaming(false)
+    }
   }
 
   return (
@@ -123,4 +134,3 @@ export default function Home() {
     </div>
   )
 }
-

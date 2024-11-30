@@ -12,21 +12,9 @@ export default function StreamingResult({ isStreaming, result }: StreamingResult
   const [streamedText, setStreamedText] = useState('')
 
   useEffect(() => {
-    if (isStreaming) {
-      setStreamedText('') // Reset streamed text when a new query is submitted
-      const words = result.split(' ')
-      let currentIndex = 0
-
-      const interval = setInterval(() => {
-        if (currentIndex < words.length) {
-          setStreamedText(prev => `${prev}${currentIndex > 0 ? ' ' : ''}${words[currentIndex]}`)
-          currentIndex++
-        } else {
-          clearInterval(interval)
-        }
-      }, 50)
-
-      return () => clearInterval(interval)
+    console.log('StreamingResult: isStreaming:', isStreaming, 'result:', result)
+    if (isStreaming || result) {
+      setStreamedText(result)
     }
   }, [isStreaming, result])
 
