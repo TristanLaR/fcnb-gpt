@@ -12,11 +12,16 @@ export default function StreamingResult({ isStreaming, result }: StreamingResult
   const [streamedText, setStreamedText] = useState('')
 
   useEffect(() => {
-    console.log('StreamingResult: isStreaming:', isStreaming, 'result:', result)
-    if (isStreaming || result) {
-      setStreamedText(result)
+    if (result) {
+      // Remove debug info if present
+      const parts = result.split('---\n')
+      if (parts.length > 1) {
+        setStreamedText(parts[1]) // Take everything after the debug separator
+      } else {
+        setStreamedText(result)
+      }
     }
-  }, [isStreaming, result])
+  }, [result])
 
   return (
     <div className="mt-8">
@@ -27,12 +32,16 @@ export default function StreamingResult({ isStreaming, result }: StreamingResult
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.5 }}
+            className="prose dark:prose-invert max-w-none"
           >
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-left">{streamedText}</p>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                {streamedText}
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
   )
 }
-

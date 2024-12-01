@@ -14,6 +14,7 @@ interface VanishingInputProps {
   inputClassName?: string;
   placeholderClassName?: string;
   isDarkMode?: boolean;
+  disabled?: boolean;
 }
 
 export function VanishingInput({
@@ -25,7 +26,8 @@ export function VanishingInput({
   className,
   inputClassName,
   placeholderClassName,
-  isDarkMode
+  isDarkMode,
+  disabled
 }: VanishingInputProps) {
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -153,15 +155,13 @@ export function VanishingInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !animating) {
-      console.log("VanishingInput: Enter key pressed");
+    if (e.key === "Enter" && !animating && !disabled) {
       vanishAndSubmit();
     }
   };
 
   const vanishAndSubmit = () => {
-    console.log("VanishingInput: vanishAndSubmit called");
-    if (value.trim()) {
+    if (value.trim() && !disabled) {
       setAnimating(true);
       draw();
       onSubmit(value.trim());
@@ -176,18 +176,14 @@ export function VanishingInput({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("VanishingInput: Form submitted");
-    if (!animating && value.trim()) {
+    if (!animating && value.trim() && !disabled) {
       vanishAndSubmit();
     }
   };
 
   return (
     <form 
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(value);
-      }}
+      onSubmit={handleSubmit}
       className={cn(
         "w-full relative",
         className,
@@ -207,10 +203,11 @@ export function VanishingInput({
         value={value}
         onChange={onChange}
         onKeyDown={handleKeyDown}
+        disabled={disabled || animating}
         className={cn(
           "w-full bg-transparent focus:outline-none",
           inputClassName,
-          animating && "text-transparent caret-transparent"
+          (disabled || animating) && "cursor-not-allowed opacity-50"
         )}
         style={{
           WebkitTextFillColor: animating ? 'transparent' : 'inherit',
