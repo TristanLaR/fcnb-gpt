@@ -34,7 +34,7 @@ export default function StreamingResult({ isStreaming, result }: StreamingResult
             transition={{ duration: 0.5 }}
             className="prose dark:prose-invert max-w-none"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <div>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
                 {streamedText}
               </p>
