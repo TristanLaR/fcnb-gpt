@@ -21,16 +21,10 @@ export default function EnhancedSearchBox({ isDarkMode, onSubmit }: EnhancedSear
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = e.target.value
-    console.log('EnhancedSearchBox: Query changed:', newQuery)
     setQuery(newQuery)
   }
 
-  const placeholders = [
-    t('searchPlaceholder'),
-    "What's on your mind?",
-    "Ask me anything!",
-    "How can I help you today?"
-  ]
+  const placeholders = ["What is FCNB?"]
 
   return (
     <div className="relative w-full">
@@ -64,4 +58,3 @@ export default function EnhancedSearchBox({ isDarkMode, onSubmit }: EnhancedSear
     </div>
   )
 }
-

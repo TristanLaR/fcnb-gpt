@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -29,39 +29,9 @@ export function VanishingInput({
   isDarkMode,
   disabled
 }: VanishingInputProps) {
-  const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
-  const [animating, setAnimating] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const newDataRef = useRef<any[]>([]);
-
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const startAnimation = () => {
-    intervalRef.current = setInterval(() => {
-      setCurrentPlaceholder((prev) => (prev + 1) % placeholders.length);
-    }, 3000);
-  };
-
-  const handleVisibilityChange = () => {
-    if (document.visibilityState !== "visible" && intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    } else if (document.visibilityState === "visible") {
-      startAnimation();
-    }
-  };
-
-  useEffect(() => {
-    startAnimation();
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [placeholders]);
 
   const draw = useCallback(() => {
     if (!inputRef.current || !canvasRef.current) return;
@@ -102,13 +72,9 @@ export function VanishingInput({
       x,
       y,
       r: 1,
-      color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] / 255 * 0.9})`, // Softer color with 60% opacity
+      color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] / 255 * 0.9})`,
     }));
   }, [value]);
-
-  useEffect(() => {
-    draw();
-  }, [value, draw]);
 
   const animate = (start: number) => {
     const animateFrame = (pos: number = 0) => {
@@ -146,7 +112,6 @@ export function VanishingInput({
         if (newDataRef.current.length > 0) {
           animateFrame(pos - 8);
         } else {
-          setAnimating(false);
           setValue('');
         }
       });
@@ -155,14 +120,13 @@ export function VanishingInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !animating && !disabled) {
+    if (e.key === "Enter" && !disabled) {
       vanishAndSubmit();
     }
   };
 
   const vanishAndSubmit = () => {
     if (value.trim() && !disabled) {
-      setAnimating(true);
       draw();
       onSubmit(value.trim());
 
@@ -176,7 +140,7 @@ export function VanishingInput({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!animating && value.trim() && !disabled) {
+    if (value.trim() && !disabled) {
       vanishAndSubmit();
     }
   };
@@ -192,10 +156,7 @@ export function VanishingInput({
     >
       <canvas
         ref={canvasRef}
-        className={cn(
-          "absolute inset-0 pointer-events-none",
-          animating ? "opacity-100" : "opacity-0"
-        )}
+        className="absolute inset-0 pointer-events-none"
       />
       <input
         ref={inputRef}
@@ -203,28 +164,29 @@ export function VanishingInput({
         value={value}
         onChange={onChange}
         onKeyDown={handleKeyDown}
-        disabled={disabled || animating}
+        disabled={disabled}
         className={cn(
           "w-full bg-transparent focus:outline-none",
           inputClassName,
-          (disabled || animating) && "cursor-not-allowed opacity-50"
+          disabled && "cursor-not-allowed opacity-50"
         )}
         style={{
-          WebkitTextFillColor: animating ? 'transparent' : 'inherit',
+          WebkitTextFillColor: 'inherit',
         }}
-        spellCheck={!animating}
+        spellCheck={true}
       />
+
       <AnimatePresence mode="wait">
         {!value && (
           <motion.span
-            key={placeholders[currentPlaceholder]}
+            key={placeholders[0]}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
             className={cn("absolute inset-y-0 flex items-center pointer-events-none text-gray-400", placeholderClassName)}
           >
-            {placeholders[currentPlaceholder]}
+            {placeholders[0]}
           </motion.span>
         )}
       </AnimatePresence>
