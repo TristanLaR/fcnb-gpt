@@ -26,6 +26,13 @@ export async function POST(req: Request) {
       encoding_format: "float"
     })
 
+    // Helper function to sanitize text for safe encoding
+    const sanitizeText = (text: string) => {
+      return text.replace(/[\u2018\u2019]/g, "'")
+                .replace(/[\u201C\u201D]/g, '"')
+                .replace(/[\u2013\u2014]/g, '-');
+    };
+
     // Query Pinecone for similar documents
     const queryResponse = await index.query({
       vector: embedding.data[0].embedding,
@@ -33,14 +40,68 @@ export async function POST(req: Request) {
       includeMetadata: true,
     })
 
+    // Log raw matches for debugging with sanitized text
+    logger.info('Raw Pinecone matches:', {
+      matches: queryResponse.matches.map(match => ({
+        id: match.id,
+        metadata: match.metadata ? {
+          ...match.metadata,
+          text: typeof match.metadata.text === 'string' ? sanitizeText(match.metadata.text) : match.metadata.text
+        } : null
+      }))
+    });
+
     // Extract the relevant context from the similar documents
     const context = queryResponse.matches
-      .map(match => match.metadata?.text || '')
+      .map(match => {
+        if (typeof match.metadata?.text === 'string') {
+          const sanitizedText = sanitizeText(match.metadata.text);
+          logger.info('Processing metadata text:', {
+            id: match.id,
+            textLength: sanitizedText.length,
+            textSample: sanitizedText.substring(0, 100)
+          });
+          return sanitizedText;
+        }
+        return '';
+      })
       .join('\n\n')
+
+    logger.info('Final context built:', {
+      contextLength: context.length,
+      contextSample: context.substring(0, 100)
+    });
+
+    // Prepare complete debug info with sanitized text
+    const debugInfo = {
+      matches: queryResponse.matches.map(match => ({
+        id: match.id,
+        score: match.score,
+        metadata: match.metadata ? {
+          ...match.metadata,
+          text: typeof match.metadata.text === 'string' ? sanitizeText(match.metadata.text) : match.metadata.text
+        } : null,
+        values: match.values,
+        sparseValues: match.sparseValues
+      })),
+      namespace: queryResponse.namespace,
+      usage: queryResponse.usage
+    }
+
+    // Create headers with complete debug info
+    const headers = new Headers({
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'X-Debug-Info': JSON.stringify(debugInfo)
+    })
+
+    // Log complete debug info server-side
+    logger.info('Pinecone Query Response:', debugInfo)
 
     // Generate response using GPT-4 with context
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
@@ -55,23 +116,27 @@ export async function POST(req: Request) {
     })
 
     // Create a readable stream for the response
+    const encoder = new TextEncoder()
+    
+    // Helper function to safely encode text with Unicode characters
+    const safeEncode = (text: string) => {
+      // Replace problematic characters with their ASCII equivalents
+      const sanitized = sanitizeText(text);
+      return encoder.encode(sanitized);
+    };
+
     const stream = new ReadableStream({
       async start(controller) {
         try {
           // Send debug info
-          const debugInfo = `DEBUG_INFO: ${JSON.stringify({ 
-            matches: queryResponse.matches.map(match => ({
-              score: match.score,
-              metadata: match.metadata
-            }))
-          })}\n---\n`;
-          controller.enqueue(new TextEncoder().encode(debugInfo));
+          controller.enqueue(safeEncode('Debug Info:\n'));
+          controller.enqueue(safeEncode(JSON.stringify(debugInfo, null, 2) + '\n---\n'));
 
           // Stream the completion
           for await (const chunk of completion) {
             const content = chunk.choices[0]?.delta?.content || '';
             if (content) {
-              controller.enqueue(new TextEncoder().encode(content));
+              controller.enqueue(safeEncode(content));
             }
           }
         } catch (error) {
@@ -83,9 +148,7 @@ export async function POST(req: Request) {
     });
 
     return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-      },
+      headers: headers,
     });
   } catch (error) {
     logger.error('Search API Error', { context: 'search', error: error as Error });
