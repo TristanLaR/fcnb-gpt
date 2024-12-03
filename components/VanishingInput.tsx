@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +29,7 @@ export function VanishingInput({
   isDarkMode,
   disabled
 }: VanishingInputProps) {
+  const [animating, setAnimating] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const newDataRef = useRef<any[]>([]);
@@ -112,6 +113,7 @@ export function VanishingInput({
         if (newDataRef.current.length > 0) {
           animateFrame(pos - 8);
         } else {
+          setAnimating(false);
           setValue('');
         }
       });
@@ -120,13 +122,14 @@ export function VanishingInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !disabled) {
+    if (e.key === "Enter" && !disabled && !animating) {
       vanishAndSubmit();
     }
   };
 
   const vanishAndSubmit = () => {
-    if (value.trim() && !disabled) {
+    if (value.trim() && !disabled && !animating) {
+      setAnimating(true);
       draw();
       onSubmit(value.trim());
 
@@ -140,7 +143,7 @@ export function VanishingInput({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (value.trim() && !disabled) {
+    if (value.trim() && !disabled && !animating) {
       vanishAndSubmit();
     }
   };
@@ -156,7 +159,10 @@ export function VanishingInput({
     >
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 pointer-events-none"
+        className={cn(
+          "absolute inset-0 pointer-events-none",
+          animating ? "opacity-100" : "opacity-0"
+        )}
       />
       <input
         ref={inputRef}
@@ -164,14 +170,14 @@ export function VanishingInput({
         value={value}
         onChange={onChange}
         onKeyDown={handleKeyDown}
-        disabled={disabled}
+        disabled={disabled || animating}
         className={cn(
           "w-full bg-transparent focus:outline-none",
           inputClassName,
-          disabled && "cursor-not-allowed opacity-50"
+          (disabled || animating) && "cursor-not-allowed opacity-50"
         )}
         style={{
-          WebkitTextFillColor: 'inherit',
+          WebkitTextFillColor: animating ? 'transparent' : 'inherit',
         }}
         spellCheck={true}
       />
