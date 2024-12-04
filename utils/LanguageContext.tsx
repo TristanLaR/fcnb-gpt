@@ -28,8 +28,8 @@ const translations: Translations = {
     fr: 'Propulsé par GPT-4',
   },
   footer: {
-    en: 'Proof of concept and intended for testing purposes only. All information presented here was sourced from fcnb.ca and is accurate as of',
-    fr: 'Preuve de concept et destiné uniquement à des fins de test. Toutes les informations présentées ici proviennent de fcnb.ca et sont exactes à la date du',
+    en: 'Proof of concept and intended for testing purposes only. All information presented here was sourced from fcnb.ca.',
+    fr: 'Preuve de concept et destiné uniquement à des fins de test. Toutes les informations présentées ici proviennent de fcnb.ca.',
   },
   languageToggle: {
     en: 'FR',
