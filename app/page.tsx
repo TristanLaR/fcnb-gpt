@@ -48,6 +48,17 @@ export default function Home() {
         throw new Error('Search request failed')
       }
 
+      // Log debug info from headers
+      const debugInfo = response.headers.get('X-Debug-Info')
+      if (debugInfo) {
+        const pineconeData = JSON.parse(debugInfo)
+        console.group('Pinecone Query Results')
+        console.log('Matches:', pineconeData.matches)
+        console.log('Namespace:', pineconeData.namespace)
+        console.log('Usage:', pineconeData.usage)
+        console.groupEnd()
+      }
+
       const reader = response.body?.getReader()
       if (!reader) {
         throw new Error('No reader available')
@@ -60,7 +71,22 @@ export default function Home() {
           break
         }
         const text = new TextDecoder().decode(value)
-        setCurrentResult(prev => prev + text)
+        const lines = text.split('\n')
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6))
+              if (data.debug) {
+                console.log('Pinecone Query Results:', data.debug)
+              } else if (data.choices?.[0]?.delta?.content) {
+                setCurrentResult(prev => prev + data.choices[0].delta.content)
+              }
+            } catch (e) {
+              // If it's not JSON, treat it as regular text
+              setCurrentResult(prev => prev + line.slice(6))
+            }
+          }
+        }
       }
     } catch (error) {
       console.error('Search error:', error)
