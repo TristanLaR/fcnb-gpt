@@ -120,9 +120,14 @@ export async function POST(req: Request) {
     return new Response(stream, {
       headers: headers,
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Search API Error:', error.message, error.stack);
     return NextResponse.json(
-      { error: 'An error occurred while processing your request' },
+      { 
+        error: 'An error occurred while processing your request',
+        details: error.message,
+        type: error.constructor.name
+      },
       { status: 500 }
     )
   }
