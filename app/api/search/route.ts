@@ -12,6 +12,8 @@ const pinecone = new Pinecone({
 
 const index = pinecone.index(process.env.PINECONE_INDEX_NAME!, process.env.PINECONE_HOST!)
 
+const aiModel = process.env.OPENAI_MODEL!
+
 export const runtime = 'edge'
 
 export async function POST(req: Request) {
@@ -73,7 +75,7 @@ export async function POST(req: Request) {
     ];
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: aiModel,
       messages,
       stream: true,
     })
