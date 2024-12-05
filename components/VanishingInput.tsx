@@ -15,6 +15,7 @@ interface VanishingInputProps {
   placeholderClassName?: string;
   isDarkMode?: boolean;
   disabled?: boolean;
+  isLoading?: boolean;
 }
 
 export function VanishingInput({
@@ -27,7 +28,8 @@ export function VanishingInput({
   inputClassName,
   placeholderClassName,
   isDarkMode,
-  disabled
+  disabled,
+  isLoading = false
 }: VanishingInputProps) {
   const [animating, setAnimating] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -170,11 +172,11 @@ export function VanishingInput({
         value={value}
         onChange={onChange}
         onKeyDown={handleKeyDown}
-        disabled={disabled || animating}
+        disabled={disabled || animating || isLoading}
         className={cn(
           "w-full bg-transparent focus:outline-none",
           inputClassName,
-          (disabled || animating) && "cursor-not-allowed opacity-50"
+          (disabled || animating || isLoading) && "cursor-not-allowed opacity-50"
         )}
         style={{
           WebkitTextFillColor: animating ? 'transparent' : 'inherit',
@@ -196,41 +198,54 @@ export function VanishingInput({
           </motion.span>
         )}
       </AnimatePresence>
-      <button
-        type="submit"
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full bg-transparent focus:outline-none z-10"
-        aria-label="Submit search"
-      >
-        <motion.svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="h-5 w-5 text-gray-400"
+      {isLoading ? (
+        <div className="absolute right-6 top-1 -translate-y-1/2 p-1 rounded-full bg-transparent z-10">
+          <span className={cn(
+            "animate-ping absolute h-4 w-4 rounded-full opacity-60",
+            isDarkMode ? "bg-blue-400" : "bg-gray-400"
+          )}></span>
+          <span className={cn(
+            "relative rounded-full h-4 w-4",
+            isDarkMode ? "bg-blue-500" : "bg-gray-500"
+          )}></span>
+        </div>
+      ) : (
+        <button
+          type="submit"
+          className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full bg-transparent focus:outline-none z-10"
+          aria-label="Submit search"
         >
-          <motion.path
-            d="M5 12l14 0"
-            initial={{
-              strokeDasharray: "50%",
-              strokeDashoffset: "50%",
-            }}
-            animate={{
-              strokeDashoffset: value ? 0 : "50%",
-            }}
-            transition={{
-              duration: 0.3,
-              ease: "linear",
-            }}
-          />
-          <path d="M13 18l6 -6" />
-          <path d="M13 6l6 6" />
-        </motion.svg>
-      </button>
+          <motion.svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5 text-gray-400"
+          >
+            <motion.path
+              d="M5 12l14 0"
+              initial={{
+                strokeDasharray: "50%",
+                strokeDashoffset: "50%",
+              }}
+              animate={{
+                strokeDashoffset: value ? 0 : "50%",
+              }}
+              transition={{
+                duration: 0.3,
+                ease: "linear",
+              }}
+            />
+            <path d="M13 18l6 -6" />
+            <path d="M13 6l6 6" />
+          </motion.svg>
+        </button>
+      )}
     </form>
   );
 }

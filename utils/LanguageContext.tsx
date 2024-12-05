@@ -6,7 +6,7 @@ type Language = 'en' | 'fr'
 
 type Translations = {
   [key: string]: {
-    [key in Language]: string | string[]
+    [key in Language]: string
   }
 }
 
@@ -24,8 +24,8 @@ const translations: Translations = {
     fr: 'Posez-moi n\'importe quelle question !',
   },
   searchPlaceholders: {
-    en: ['What is FCNB?', 'How do I file a complaint?', 'Tell me about investment fraud'],
-    fr: ['Qu\'est-ce que la FCNB ?', 'Comment déposer une plainte ?', 'Parlez-moi de la fraude en matière d\'investissement'],
+    en: 'What is FCNB?',
+    fr: 'Qu\'est-ce que la FCNB ?',
   },
   poweredBy: {
     en: 'Powered by GPT-4',
@@ -48,7 +48,7 @@ const translations: Translations = {
 type LanguageContextType = {
   language: Language
   setLanguage: (lang: Language) => void
-  t: (key: string) => string | string[]
+  t: (key: string) => string
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
@@ -68,7 +68,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     localStorage.setItem('language', lang)
   }
 
-  const t = (key: string): string | string[] => {
+  const t = (key: string): string => {
     return translations[key]?.[language] || key
   }
 

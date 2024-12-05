@@ -24,7 +24,7 @@ export default function EnhancedSearchBox({ isDarkMode, onSubmit }: EnhancedSear
     setQuery(newQuery)
   }
 
-  const placeholders = t('searchPlaceholders') as string[]
+  const placeholder = t('searchPlaceholders')
 
   return (
     <div className="relative w-full">
@@ -40,7 +40,7 @@ export default function EnhancedSearchBox({ isDarkMode, onSubmit }: EnhancedSear
         <div className="h-6 border-l border-gray-300 mx-2"></div>
       </div>
       <VanishingInput
-        placeholders={placeholders}
+        placeholders={[placeholder]}
         onChange={handleChange}
         onSubmit={handleSubmit}
         value={query}
