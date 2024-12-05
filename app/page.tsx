@@ -108,7 +108,7 @@ export default function Home() {
         </div>
         
         <div className="space-y-8 text-center">
-          <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] leading-tight font-bold flex items-center justify-center gap-4 flex-nowrap">
+          <h1 className="text-[2rem] sm:text-[3.5rem] md:text-[4.5rem] leading-tight font-bold flex items-center justify-center gap-2 sm:gap-4 flex-wrap md:flex-nowrap px-2">
             <span className={`
               relative inline-block
               bg-gradient-to-r from-blue-500 via-blue-400 to-yellow-400
@@ -122,7 +122,7 @@ export default function Home() {
             }}>
               FCNB
             </span>
-            <span className={`${isDarkMode ? 'text-white' : 'text-[#0A1A2F]'} whitespace-nowrap`}>
+            <span className={`${isDarkMode ? 'text-white' : 'text-[#0A1A2F]'} md:whitespace-nowrap`}>
               {t('title')}
             </span>
           </h1>
