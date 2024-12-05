@@ -97,7 +97,7 @@ export default function Home() {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-[#0A1A2F]' : 'bg-white'} transition-colors duration-300`}>
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8 min-h-screen flex flex-col">
         <div className="flex justify-end items-center mb-8 space-x-4">
           <LanguageToggle className="h-8 px-3" />
           <DarkModeToggle
@@ -151,7 +151,7 @@ export default function Home() {
           <StreamingResult isStreaming={isStreaming} result={currentResult} />
         </div>
 
-        <footer className="absolute bottom-4 left-4 right-4 text-center">
+        <footer className="mt-auto pt-8 pb-4 text-center">
           <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             {t('footer')}
           </p>
