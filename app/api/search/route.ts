@@ -20,6 +20,14 @@ export async function POST(req: Request) {
   try {
     const { prompt, language } = await req.json()
 
+    // Log the incoming search request
+    console.log(JSON.stringify({
+      type: 'search_request',
+      prompt,
+      language,
+      timestamp: new Date().toISOString()
+    }))
+
     // Generate embeddings for the query
     const embedding = await openai.embeddings.create({
       model: 'text-embedding-3-small',
@@ -120,6 +128,15 @@ export async function POST(req: Request) {
         }
       }
     });
+
+    // Log the search response
+    console.log(JSON.stringify({
+      type: 'search_response',
+      prompt,
+      language,
+      response: '',
+      timestamp: new Date().toISOString()
+    }))
 
     return new Response(stream, {
       headers: headers,
