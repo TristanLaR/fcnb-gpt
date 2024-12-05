@@ -66,11 +66,13 @@ export async function POST(req: Request) {
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       {
         role: 'system',
-        content: 'You are a helpful assistant that accurately answers queries about the Financial Commission of New Brunswick (FCNB) from its website data. Use the text provided to form your answer, but avoid copying word-for-word from the original text. Try to use your own words when possible. Keep your answer under 5 sentences. Be accurate, helpful, concise, and clear. If you cannot find the answer in the context, say so politely and suggest contacting FCNB directly for more accurate information.',
+        content: `You are a helpful assistant that accurately answers queries about the Financial Commission of New Brunswick (FCNB) from its website data. Use the text provided to form your answer, but avoid copying word-for-word from the original text. Try to use your own words when possible. Keep your answer under 5 sentences. Be accurate, helpful, concise, and clear. If you cannot find the answer in the context, say so politely and suggest contacting FCNB directly for more accurate information.${
+          language ? `\n\nIMPORTANT: You MUST respond in ${language} regardless of the language of the source text. If you need to translate the information from the source text, do so accurately while maintaining the meaning.` : ''
+        }`,
       },
       {
         role: 'user',
-        content: `Context:\n${context}\n\nQuestion: ${prompt}${language ? ` (Please respond in ${language})` : ''}`
+        content: `Context:\n${context}\n\nQuestion: ${prompt}`
       }
     ];
 
