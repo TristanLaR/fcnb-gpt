@@ -113,13 +113,27 @@ export async function POST(req: Request) {
           // Send debug data first
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ debug: queryResponse })}\n\n`));
 
+          // Collect the complete response
+          let completeResponse = '';
+
           // Stream the completion
           for await (const chunk of completion) {
             const content = chunk.choices[0]?.delta?.content || ''
             if (content) {
+              completeResponse += content;
               controller.enqueue(encoder.encode(`data: ${JSON.stringify(chunk)}\n\n`))
             }
           }
+
+          // Log the complete search response
+          console.log(JSON.stringify({
+            type: 'search_response',
+            prompt,
+            language,
+            response: completeResponse,
+            timestamp: new Date().toISOString()
+          }))
+
           controller.close()
         } catch (error) {
           controller.error(error);
@@ -128,15 +142,6 @@ export async function POST(req: Request) {
         }
       }
     });
-
-    // Log the search response
-    console.log(JSON.stringify({
-      type: 'search_response',
-      prompt,
-      language,
-      response: '',
-      timestamp: new Date().toISOString()
-    }))
 
     return new Response(stream, {
       headers: headers,
