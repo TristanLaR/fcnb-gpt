@@ -24,7 +24,7 @@ export default function EnhancedSearchBox({ isDarkMode, onSubmit }: EnhancedSear
     setQuery(newQuery)
   }
 
-  const placeholders = ["What is FCNB?"]
+  const placeholders = t('searchPlaceholders') as string[]
 
   return (
     <div className="relative w-full">
