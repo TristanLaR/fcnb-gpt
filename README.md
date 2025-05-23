@@ -3,10 +3,9 @@
 An intelligent search assistant built for the Financial Commission of New Brunswick (FCNB) that leverages advanced AI technologies to provide accurate, context-aware responses about financial regulations and compliance information.
 
 ## 🎥 Demo
+https://github.com/user-attachments/assets/59539602-c71e-460b-9017-84974040a1c4
 
-| Light Mode | Dark Mode |
-|------------|-----------|
-| ![Light Mode Demo](./media/fcnbxyz_lightmode.mp4) | ![Dark Mode Demo](./media/fcnbxyz_darkmode.mp4) |
+https://github.com/user-attachments/assets/eacc45d4-ceca-40f0-b864-e1cb6f907eeb
 
 ## 🚀 Features
 
