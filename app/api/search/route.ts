@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { Pinecone } from '@pinecone-database/pinecone'
+import { logger } from '@/utils/logger'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -17,23 +18,32 @@ const aiModel = process.env.OPENAI_MODEL!
 export const runtime = 'edge'
 
 export async function POST(req: Request) {
+  const requestId = logger.generateRequestId()
+  const requestStartTime = Date.now()
+
   try {
     const { prompt, language } = await req.json()
 
     // Log the incoming search request
-    console.log(JSON.stringify({
-      type: 'search_request',
-      prompt,
-      language,
-      timestamp: new Date().toISOString()
-    }))
+    await logger.logSearchRequest(requestId, prompt, language)
 
     // Generate embeddings for the query
+    const embeddingStartTime = Date.now()
     const embedding = await openai.embeddings.create({
       model: 'text-embedding-3-small',
       input: prompt,
       encoding_format: "float"
     })
+    const embeddingDuration = Date.now() - embeddingStartTime
+
+    // Log embedding request
+    await logger.logEmbedding(
+      requestId,
+      prompt,
+      'text-embedding-3-small',
+      embeddingDuration,
+      { totalTokens: embedding.usage?.total_tokens || 0 }
+    )
 
     // Helper function to sanitize text for safe encoding
     const sanitizeText = (text: string) => {
@@ -54,11 +64,21 @@ export async function POST(req: Request) {
     };
 
     // Query Pinecone for similar documents
+    const pineconeStartTime = Date.now()
     const queryResponse = await index.query({
       vector: embedding.data[0].embedding,
       topK: 10,
       includeMetadata: true,
     })
+    const pineconeDuration = Date.now() - pineconeStartTime
+
+    // Log Pinecone query
+    await logger.logPineconeQuery(
+      requestId,
+      pineconeDuration,
+      queryResponse.matches?.length || 0,
+      10
+    )
 
     // Extract the relevant context from the similar documents
     const context = queryResponse.matches
@@ -84,6 +104,7 @@ export async function POST(req: Request) {
       }
     ];
 
+    const completionStartTime = Date.now()
     const completion = await openai.chat.completions.create({
       model: aiModel,
       messages,
@@ -99,7 +120,7 @@ export async function POST(req: Request) {
 
     // Create a readable stream for the response
     const encoder = new TextEncoder()
-    
+
     // Helper function to safely encode text with Unicode characters
     const safeEncode = (text: string) => {
       // Replace problematic characters with their ASCII equivalents
@@ -125,17 +146,32 @@ export async function POST(req: Request) {
             }
           }
 
+          const completionDuration = Date.now() - completionStartTime
+          const totalDuration = Date.now() - requestStartTime
+
+          // Log chat completion
+          await logger.logChatCompletion(
+            requestId,
+            prompt,
+            aiModel,
+            completionDuration,
+            completeResponse
+          )
+
           // Log the complete search response
-          console.log(JSON.stringify({
-            type: 'search_response',
+          await logger.logSearchResponse(
+            requestId,
             prompt,
             language,
-            response: completeResponse,
-            timestamp: new Date().toISOString()
-          }))
+            completeResponse,
+            totalDuration
+          )
 
           controller.close()
         } catch (error) {
+          if (error instanceof Error) {
+            await logger.logError(requestId, error, { phase: 'streaming' })
+          }
           controller.error(error);
         } finally {
           controller.close();
@@ -146,13 +182,15 @@ export async function POST(req: Request) {
     return new Response(stream, {
       headers: headers,
     });
-  } catch (error: any) {
-    console.error('Search API Error:', error.message, error.stack);
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error))
+    await logger.logError(requestId, err, { phase: 'request_processing' })
+
     return NextResponse.json(
-      { 
+      {
         error: 'An error occurred while processing your request',
-        details: error.message,
-        type: error.constructor.name
+        details: err.message,
+        type: err.constructor.name
       },
       { status: 500 }
     )
